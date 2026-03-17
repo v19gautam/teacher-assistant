@@ -8,6 +8,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
 
 @Service
@@ -36,18 +38,19 @@ public class AuthService {
         return "User registered successfully";
     }
 
-    public String login(LoginRequest request) {
+    public Map<String, Object> login(LoginRequest request) {
 
-        Optional<User> user = userRepository.findByEmail(request.getEmail());
-        BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
-        if (user.isEmpty()) {
-            return "Invalid email";
+        User user = userRepository.findByEmail(request.getEmail())
+                .orElseThrow(() -> new RuntimeException("Invalid email"));
+
+        if (!user.getPassword().equals(request.getPassword())) {
+            throw new RuntimeException("Invalid password");
         }
 
-        if (!encoder.matches(request.getPassword(), user.get().getPassword())) {
-            return "Invalid password";
-        }
+        Map<String, Object> response = new HashMap<>();
+        response.put("message", "Login successful");
+        response.put("userId", user.getId());
 
-        return "Login successful";
+        return response;
     }
 }
