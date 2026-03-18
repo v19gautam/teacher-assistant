@@ -18,12 +18,13 @@ public class AuthService {
     @Autowired
     private UserRepository userRepository;
 
-    public String register(RegisterRequest request) {
+    public Map<String, String> register(RegisterRequest request) {
 
+        Map<String, String> responseMap = new HashMap<>();
         Optional<User> existingUser = userRepository.findByEmail(request.getEmail());
 
         if (existingUser.isPresent()) {
-            return "Email already registered";
+            responseMap.put("Message", "Email already registered");
         }
 
         BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
@@ -35,7 +36,8 @@ public class AuthService {
 
         userRepository.save(user);
 
-        return "User registered successfully";
+        responseMap.put("Message", "User registered successfully");
+        return responseMap;
     }
 
     public Map<String, Object> login(LoginRequest request) {
@@ -43,7 +45,8 @@ public class AuthService {
         User user = userRepository.findByEmail(request.getEmail())
                 .orElseThrow(() -> new RuntimeException("Invalid email"));
 
-        if (!user.getPassword().equals(request.getPassword())) {
+        BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
+        if (!encoder.matches(request.getPassword(), user.getPassword())) {
             throw new RuntimeException("Invalid password");
         }
 
