@@ -9,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/worksheet")
@@ -19,28 +20,28 @@ public class WorksheetController {
     private WorksheetService worksheetService;
 
     @PostMapping("/generate")
-    public WorksheetResponse generateWorksheet(@RequestBody WorksheetRequest request){
+    public ResponseEntity<?> generateWorksheet(@RequestBody WorksheetRequest request){
 
-        return worksheetService.generateWorksheet(request);
+        return ResponseEntity.ok(worksheetService.generateWorksheet(request));
     }
 
     @GetMapping("/user/{userId}")
-    public List<WorksheetResponse> getWorksheets(@PathVariable Long userId){
+    public ResponseEntity<?> getWorksheets(@PathVariable Long userId){
 
-        return worksheetService.getWorksheetsByUser(userId);
+        return ResponseEntity.ok(worksheetService.getWorksheetsByUser(userId));
 
     }
 
     @GetMapping("/{id}")
-    public WorksheetResponse getWorksheet(@PathVariable Long id){
+    public ResponseEntity<?> getWorksheet(@PathVariable Long id){
 
-        return worksheetService.getWorksheetById(id);
+        return ResponseEntity.ok(worksheetService.getWorksheetById(id));
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<String> deleteWorksheet(@PathVariable Long id) {
+    public ResponseEntity<?> deleteWorksheet(@PathVariable Long id) {
 
-        worksheetService.deleteWorksheet(id);
-        return ResponseEntity.ok("Worksheet deleted successfully");
+        Map<String, String> response = worksheetService.deleteWorksheet(id);
+        return ResponseEntity.ok(response);
     }
 }

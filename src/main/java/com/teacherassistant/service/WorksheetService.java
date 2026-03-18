@@ -10,7 +10,9 @@ import com.teacherassistant.repository.WorksheetRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class WorksheetService {
@@ -76,12 +78,15 @@ public class WorksheetService {
                 .orElseThrow(()->new ResourceNotFoundException("Worksheet not found with id: " + id));
     }
 
-    public void deleteWorksheet(Long id) {
+    public Map<String, String> deleteWorksheet(Long id) {
 
+        Map<String, String> responseMap = new HashMap<>();
         Worksheet worksheet = worksheetRepository.findById(id)
                 .orElseThrow(()->new ResourceNotFoundException("Worksheet not found with id: " + id));
 
         worksheetRepository.delete(worksheet);
+        responseMap.put("Message", "Worksheet deleted successfully");
+        return responseMap;
     }
 
 }
