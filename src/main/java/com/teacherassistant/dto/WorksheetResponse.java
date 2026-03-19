@@ -2,6 +2,8 @@ package com.teacherassistant.dto;
 
 import lombok.Data;
 
+import java.util.Map;
+
 @Data
 public class WorksheetResponse {
 
@@ -13,6 +15,6 @@ public class WorksheetResponse {
 
     private String topic;
 
-    private String questionsJson;
+    private Map<String, Object> questions;
 
 }

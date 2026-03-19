@@ -9,6 +9,7 @@ import com.teacherassistant.repository.UserRepository;
 import com.teacherassistant.repository.WorksheetRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.util.HashMap;
 import java.util.List;
@@ -58,7 +59,14 @@ public class WorksheetService {
         response.setClassLevel(worksheet.getClassLevel());
         response.setSubject(worksheet.getSubject());
         response.setTopic(worksheet.getTopic());
-        response.setQuestionsJson(worksheet.getQuestionsJson());
+        try {
+            ObjectMapper objectMapper = new ObjectMapper();
+            Map<String, Object> questionsMap = objectMapper.readValue(worksheet.getQuestionsJson(), Map.class);
+            response.setQuestions(questionsMap);
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new RuntimeException("Error parsing questions JSON");
+        }
 
         return response;
     }
