@@ -24,6 +24,9 @@ public class WorksheetService {
     @Autowired
     private UserRepository userRepository;
 
+    @Autowired
+    private AIService aiService;
+
     public WorksheetResponse generateWorksheet(WorksheetRequest request){
 
         User user = userRepository.findById(request.getUserId())
@@ -35,14 +38,11 @@ public class WorksheetService {
         worksheet.setSubject(request.getSubject());
         worksheet.setTopic(request.getTopic());
 
-        String questions = """
-        {
-            "questions":[
-                {"question":"Sample Question 1","answer":"Answer 1"},
-                {"question":"Sample Question 2","answer":"Answer 2"}
-            ]
-        }
-        """;
+        String questions = aiService.generateQuestions(
+                request.getClassLevel(),
+                request.getSubject(),
+                request.getTopic()
+        );
 
         worksheet.setQuestionsJson(questions);
 
