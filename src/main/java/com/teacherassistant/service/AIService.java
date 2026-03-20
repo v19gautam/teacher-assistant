@@ -3,6 +3,8 @@ package com.teacherassistant.service;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 @Service
 public class AIService {
@@ -40,7 +42,23 @@ public class AIService {
                     .retrieve()
                     .bodyToMono(String.class)
                     .block();
-            return response;
+
+            ObjectMapper mapper = new ObjectMapper();
+
+            JsonNode root = mapper.readTree(response);
+
+            String content = root
+                    .path("choices")
+                    .get(0)
+                    .path("message")
+                    .path("content")
+                    .asText();
+
+            content = content.replace("```json", "")
+                    .replace("```", "")
+                    .trim();
+
+            return content;
         } catch (Exception e) {
             e.printStackTrace();
             throw new RuntimeException("Error occurred while creating questions");
