@@ -54,14 +54,27 @@ public class AIService {
                     .path("content")
                     .asText();
 
-            content = content.replace("```json", "")
-                    .replace("```", "")
-                    .trim();
+//            content = content.replace("```json", "")
+//                    .replace("```", "")
+//                    .trim();
+
+            content = extractJson(content);
 
             return content;
         } catch (Exception e) {
             e.printStackTrace();
             throw new RuntimeException("Error occurred while creating questions");
+        }
+    }
+
+    private String extractJson(String content) {
+        int start = content.indexOf("{");
+        int end = content.lastIndexOf("}");
+
+        if(start == -1 || end == -1) {
+            throw new RuntimeException("Invalid AI response format");
+        } else {
+            return content.substring(start, end+1);
         }
     }
 }
