@@ -41,7 +41,9 @@ public class WorksheetService {
         String questions = aiService.generateQuestions(
                 request.getClassLevel(),
                 request.getSubject(),
-                request.getTopic()
+                request.getTopic(),
+                request.getDifficulty(),
+                request.getCount()
         );
 
         worksheet.setQuestionsJson(questions);

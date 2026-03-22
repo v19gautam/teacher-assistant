@@ -14,9 +14,9 @@ public class AIService {
     @Value("${ai.api.key}")
     private String API_KEY;
 
-    public String generateQuestions(String classLevel, String subject, String topic) {
+    public String generateQuestions(String classLevel, String subject, String topic, String difficulty, int count) {
 
-        String prompt = "Generate 5 questions with answers for class " + classLevel +
+        String prompt = "Generate " + count + " " +difficulty+ " level questions with answers for class " + classLevel +
                 ", subject " + subject +
                 ", topic " + topic +
                 " in JSON format like: {questions:[{question:'',answer:''}]}";

@@ -9,5 +9,7 @@ public class WorksheetRequest {
     private String classLevel;
     private String subject;
     private String topic;
+    private String difficulty;
+    private int count;
 
 }
