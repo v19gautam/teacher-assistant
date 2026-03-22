@@ -27,6 +27,9 @@ public class WorksheetService {
     @Autowired
     private AIService aiService;
 
+    @Autowired
+    private PDFService pdfService;
+
     public WorksheetResponse generateWorksheet(WorksheetRequest request){
 
         User user = userRepository.findById(request.getUserId())
@@ -97,6 +100,24 @@ public class WorksheetService {
         worksheetRepository.delete(worksheet);
         responseMap.put("Message", "Worksheet deleted successfully");
         return responseMap;
+    }
+
+    public byte[] generatePdf(Long id) {
+
+        Worksheet worksheet = worksheetRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Worksheet not found"));
+
+        try {
+            ObjectMapper mapper = new ObjectMapper();
+
+            Map<String, Object> questionsMap =
+                    mapper.readValue(worksheet.getQuestionsJson(), Map.class);
+
+            return pdfService.generatePdf(questionsMap);
+
+        } catch (Exception e) {
+            throw new RuntimeException("Error generating PDF");
+        }
     }
 
 }

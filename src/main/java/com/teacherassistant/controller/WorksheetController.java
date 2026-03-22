@@ -1,5 +1,6 @@
 package com.teacherassistant.controller;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.teacherassistant.dto.WorksheetRequest;
 import com.teacherassistant.dto.WorksheetResponse;
 import com.teacherassistant.model.Worksheet;
@@ -43,5 +44,16 @@ public class WorksheetController {
 
         Map<String, String> response = worksheetService.deleteWorksheet(id);
         return ResponseEntity.ok(response);
+    }
+
+    @GetMapping("/pdf/{id}")
+    public ResponseEntity<byte[]> downloadPdf(@PathVariable Long id) {
+
+        byte[] pdf = worksheetService.generatePdf(id);
+
+        return ResponseEntity.ok()
+                .header("Content-Disposition", "attachment; filename=worksheet.pdf")
+                .header("Content-Type", "application/pdf")
+                .body(pdf);
     }
 }
