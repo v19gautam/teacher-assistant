@@ -22,6 +22,9 @@ public class Worksheet {
     @Column(columnDefinition = "TEXT")
     private String questionsJson;
 
+    @Column(unique = true)
+    private String shareId;
+
     @ManyToOne
     @JoinColumn(name = "user_id")
     private User user;

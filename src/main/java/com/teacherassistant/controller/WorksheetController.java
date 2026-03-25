@@ -56,4 +56,9 @@ public class WorksheetController {
                 .header("Content-Type", "application/pdf")
                 .body(pdf);
     }
+
+    @GetMapping("/public/{shareId}")
+    public WorksheetResponse getPublicWorksheet(@PathVariable String shareId) {
+        return worksheetService.getByShareId(shareId);
+    }
 }

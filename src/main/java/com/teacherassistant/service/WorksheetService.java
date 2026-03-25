@@ -14,6 +14,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 @Service
 public class WorksheetService {
@@ -41,6 +42,8 @@ public class WorksheetService {
         worksheet.setSubject(request.getSubject());
         worksheet.setTopic(request.getTopic());
 
+        worksheet.setShareId(UUID.randomUUID().toString());
+
         String questions = aiService.generateQuestions(
                 request.getClassLevel(),
                 request.getSubject(),
@@ -56,6 +59,14 @@ public class WorksheetService {
         return mapToResponse(saved);
     }
 
+    public WorksheetResponse getByShareId(String shareId) {
+
+        Worksheet worksheet = worksheetRepository.findByShareId(shareId)
+                .orElseThrow(() -> new RuntimeException("Not found"));
+
+        return mapToResponse(worksheet);
+    }
+
     private WorksheetResponse mapToResponse(Worksheet worksheet){
 
         WorksheetResponse response = new WorksheetResponse();
@@ -64,6 +75,7 @@ public class WorksheetService {
         response.setClassLevel(worksheet.getClassLevel());
         response.setSubject(worksheet.getSubject());
         response.setTopic(worksheet.getTopic());
+        response.setShareId(worksheet.getShareId());
         try {
             ObjectMapper objectMapper = new ObjectMapper();
             Map<String, Object> questionsMap = objectMapper.readValue(worksheet.getQuestionsJson(), Map.class);
