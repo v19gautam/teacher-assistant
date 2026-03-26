@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -41,6 +42,7 @@ public class WorksheetService {
         worksheet.setClassLevel(request.getClassLevel());
         worksheet.setSubject(request.getSubject());
         worksheet.setTopic(request.getTopic());
+        worksheet.setCreatedAt(LocalDateTime.now());
 
         worksheet.setShareId(UUID.randomUUID().toString());
 
@@ -132,4 +134,19 @@ public class WorksheetService {
         }
     }
 
+    public Map<String, Object> getStats(Long userId) {
+
+        long total = worksheetRepository.countByUserId(userId);
+
+        // last 7 days example
+        LocalDateTime lastWeek = LocalDateTime.now().minusDays(7);
+
+        long recent = worksheetRepository.countByUserIdAndCreatedAtAfter(userId, lastWeek);
+
+        Map<String, Object> stats = new HashMap<>();
+        stats.put("total", total);
+        stats.put("recent", recent);
+
+        return stats;
+    }
 }

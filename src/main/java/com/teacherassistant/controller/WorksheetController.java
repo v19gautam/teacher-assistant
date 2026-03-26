@@ -61,4 +61,9 @@ public class WorksheetController {
     public WorksheetResponse getPublicWorksheet(@PathVariable String shareId) {
         return worksheetService.getByShareId(shareId);
     }
+
+    @GetMapping("/stats/{userId}")
+    public Map<String, Object> getStats(@PathVariable Long userId) {
+        return worksheetService.getStats(userId);
+    }
 }
